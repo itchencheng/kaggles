@@ -20,7 +20,6 @@ import xgboost
 import sklearn.model_selection
 
 
-
 def ReadData():
 	train_file = "/home/chen/dataset/kaggle/titanic/train.csv"
 	test_file  = "/home/chen/dataset/kaggle/titanic/test.csv"
@@ -28,6 +27,15 @@ def ReadData():
 	train = pd.read_csv(train_file)
 	test  = pd.read_csv(test_file)
 	return train, test
+
+
+def CheckNaN(df):
+    flag = df.isnull().any()
+    print(flag)
+    if True in flag:
+        return False
+    else:
+        return True
 
 
 def CleanData(titanic):
@@ -72,6 +80,7 @@ def CleanData(titanic):
 
     return titanic
 
+
 def main():
     ''' read data '''
     train_data, test_data = ReadData()
@@ -86,12 +95,19 @@ def main():
     train_data = CleanData(train_data)
     test_data  = CleanData(test_data)
 
+    if (CheckNaN(train_data)):
+        print("ok!")
+    else:
+        print("not ok!")
+
+
     ''' feature engineering '''
-    features = ["Pclass", "sex", "child", "fimalysize", "Fare", "embark", "cabin"]
+    #features = ["Pclass", "sex", "child", "fimalysize", "Fare", "embark", "cabin"]
+    features = ["Pclass"]
 
     ''' build model '''
     clf = xgboost.XGBClassifier(learning_rate=0.1, max_depth=2,\
-                        silent=True, objective='binary:logistic')
+                                silent=True, objective='binary:logistic')
 
 
     param_test = {
@@ -103,7 +119,7 @@ def main():
     model_selection.fit(train_data[features], train_data["Survived"])
 
     print("### grid_scores_")
-    print(model_selection.grid_scores_)
+    #print(model_selection.grid_scores_)
     print("### best_params_")
     print(model_selection.best_params_)
     print("### best_params_")
