@@ -31,6 +31,7 @@ def ReadData():
 
 def CheckNaN(df):
     flag = df.isnull().any()
+    print(type(flag))
     print(flag)
     if True in flag:
         return False
@@ -102,28 +103,20 @@ def main():
 
 
     ''' feature engineering '''
-    #features = ["Pclass", "sex", "child", "fimalysize", "Fare", "embark", "cabin"]
-    features = ["Pclass"]
+    features = ["Pclass", "sex", "child", "fimalysize", "Fare", "embark", "cabin"]
 
     ''' build model '''
-    clf = xgboost.XGBClassifier(learning_rate=0.1, max_depth=2,\
+    clf = xgboost.XGBClassifier(learning_rate=0.1, max_depth=2,
                                 silent=True, objective='binary:logistic')
 
 
-    param_test = {
-        'n_estimators': range(30, 50, 2),
-        'max_depth': range(2, 7, 1)
-    }
-    model_selection = sklearn.model_selection.GridSearchCV(estimator = clf, param_grid = param_test, 
-                                scoring='accuracy', cv=5)
-    model_selection.fit(train_data[features], train_data["Survived"])
+    clf.fit(train_data[features], train_data["Survived"])
 
-    print("### grid_scores_")
-    #print(model_selection.grid_scores_)
-    print("### best_params_")
-    print(model_selection.best_params_)
-    print("### best_params_")
-    print(model_selection.best_score_)
+    print(test_data[features])
+
+    predictions = clf.predict(test_data[features])
+
+    print(predictions)
 
     print('this is xgboost!')
 
