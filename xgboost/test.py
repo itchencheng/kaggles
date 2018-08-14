@@ -106,17 +106,17 @@ def main():
     features = ["Pclass", "sex", "child", "fimalysize", "Fare", "embark", "cabin"]
 
     ''' build model '''
-    clf = xgboost.XGBClassifier(learning_rate=0.1, max_depth=2,
+    clf = xgboost.XGBClassifier(learning_rate=0.1, max_depth=5, n_estimators=100,
                                 silent=True, objective='binary:logistic')
-
 
     clf.fit(train_data[features], train_data["Survived"])
 
-    print(test_data[features])
-
     predictions = clf.predict(test_data[features])
 
-    print(predictions)
+    
+    submission = pd.DataFrame({'PassengerId': test_data['PassengerId'],
+                                'Survived': predictions})
+    submission.to_csv("gender_submission.csv", index=False)
 
     print('this is xgboost!')
 
