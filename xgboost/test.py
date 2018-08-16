@@ -9,8 +9,10 @@
 *         Author:  chencheng
 *
 *        History:  initial draft
+* 
 * https://blog.csdn.net/c2a2o2/article/details/77646025
 * https://zhuanlan.zhihu.com/p/28739256
+* kaggle: https://www.kaggle.com/c/titanic
 *******************************************************************************
 '''
 
@@ -31,8 +33,8 @@ def ReadData():
 
 def CheckNaN(df):
     flag = df.isnull().any()
-    print(type(flag))
-    print(flag)
+    #print(type(flag))
+    #print(flag)
     if True in flag:
         return False
     else:
@@ -106,7 +108,9 @@ def main():
     features = ["Pclass", "sex", "child", "fimalysize", "Fare", "embark", "cabin"]
 
     ''' build model '''
-    clf = xgboost.XGBClassifier(learning_rate=0.1, max_depth=5, n_estimators=100,
+    #clf = xgboost.XGBClassifier(learning_rate=0.1, max_depth=5, n_estimators=100,
+    #                            silent=False, objective='binary:logistic')
+    clf = xgboost.XGBClassifier(learning_rate=0.1, max_depth=6, n_estimators=32,
                                 silent=True, objective='binary:logistic')
 
     clf.fit(train_data[features], train_data["Survived"])
@@ -116,7 +120,10 @@ def main():
     
     submission = pd.DataFrame({'PassengerId': test_data['PassengerId'],
                                 'Survived': predictions})
-    submission.to_csv("gender_submission.csv", index=False)
+
+    output_file_name = "gender_submission.csv"
+    submission.to_csv(output_file_name, index=False)
+    print("# %s generated!" %(output_file_name))
 
     print('this is xgboost!')
 
